@@ -101,19 +101,6 @@ begin
 				localRegWrite<=RegWritein;
 				localPCSrc2<=PCSrc2in;
 				localCommandOP<=CommandOPin;
-			else
-				localImm<="0000000000000000";
-				localR1<="0000";
-				localR2<="0000";
-				localRegDst<="0000";
-				localdata1<="0000000000000000";
-				localdata2<="0000000000000000";
-				localALUSrc<='0';
-				localALUOP<="0000";
-				localMemRead<='0';
-				localMemWrite<='0';
-				localMemtoReg<='0';
-				localRegWrite<='0';
 			end if;
 	end if;
 end process;

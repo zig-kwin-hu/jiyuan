@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity MWRegister is
-	port(
+	port(	MEMWBWrite:in STD_LOGIC;
 			  clk : in STD_LOGIC;
 			  rst : in STD_LOGIC;
 			  Regin: in STD_LOGIC_VECTOR(3 downto 0);
@@ -49,12 +49,14 @@ begin
 		localRegWrite<='0';
 		localdata2<="0000000000000000";
 	elsif(clk'event and clk='1') then
+		if(MEMWBWrite='0') then
 		localReg<=Regin;
 		localALUresult<=ALUresultin;
 		localMem<=Memin;
 		localMemtoReg<=MemtoRegin;
 		localRegWrite<=RegWritein;
 		localdata2<=data2in
+		end if;
 	end if;
 end process;
 

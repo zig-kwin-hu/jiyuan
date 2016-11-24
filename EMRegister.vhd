@@ -63,15 +63,6 @@ begin
 			localMemWrite<=MemWritein;
 			localMemtoReg<=MemtoRegin;
 			localRegWrite<=RegWritein;
-			else
-			localPC<="0000000000000000";
-			localReg<="0000";
-			localdata2<="0000000000000000";
-			localALUresult<="0000000000000000";
-			localMemRead<='0';
-			localMemWrite<='0';
-			localMemtoReg<='0';
-			localRegWrite<='0';
 			end if;
 	end if;
 end process;
