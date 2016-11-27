@@ -43,8 +43,7 @@ architecture Behavioral of CPU is
            	PCin : in  STD_LOGIC_VECTOR (15 downto 0);
 			PCout : out STD_LOGIC_VECTOR (15 downto 0);
            	Commandin : in  STD_LOGIC_VECTOR (15 downto 0);
-           	Commandout : inout  STD_LOGIC_VECTOR (15 downto 0);
-           	);	
+           	Commandout : inout  STD_LOGIC_VECTOR (15 downto 0);	
 	 end component;
 
 	 component DERegister is
@@ -210,9 +209,6 @@ architecture Behavioral of CPU is
 	 signal regwriteout_exmem:STD_LOGIC;
 	 signal memtoregin_exmem:STD_LOGIC;
 	 signal regwritein_exmem:STD_LOGIC;
-
-
-
 
 begin
 

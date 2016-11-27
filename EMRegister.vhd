@@ -33,6 +33,7 @@ signal localMemRead: STD_LOGIC;
 signal localMemWrite: STD_LOGIC;
 signal localMemtoReg: STD_LOGIC;
 signal localRegWrite: STD_LOGIC;
+signal state: STD_LOGIC_VECTOR(1 downto 0);
 
 begin
 
@@ -55,15 +56,23 @@ begin
 			localMemtoReg<='0';
 			localRegWrite<='0';
 	elsif(clk'event and clk='1') then
-			if(EXMEMWrite='0') then
-			localReg<=Regin;
-			localdata2<=data2in;
-			localALUresult<=ALUresultin;
-			localMemRead<=MemReadin;
-			localMemWrite<=MemWritein;
-			localMemtoReg<=MemtoRegin;
-			localRegWrite<=RegWritein;
-			end if;
+		case (state) is
+			when "00" =>
+				if(EXMEMWrite='1') then
+				localReg<=Regin;
+				localdata2<=data2in;
+				localALUresult<=ALUresultin;
+				localMemRead<=MemReadin;
+				localMemWrite<=MemWritein;
+				localMemtoReg<=MemtoRegin;
+				localRegWrite<=RegWritein;
+				end if;
+				state<="01";
+			when "01" =>
+				state<="10";
+			when "10" =>
+				state<="00";
+		end case;
 	end if;
 end process;
 

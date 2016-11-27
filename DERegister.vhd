@@ -49,6 +49,7 @@ signal localMemRead: STD_LOGIC;
 signal localMemWrite: STD_LOGIC;
 signal localMemtoReg: STD_LOGIC;
 signal localRegWrite: STD_LOGIC;
+signal state:STD_LOGIC_VECTOR(1 downto 0);
 
 begin
 Immout<=localImm;
@@ -79,29 +80,37 @@ begin
 			localMemtoReg<='0';
 			localRegWrite<='0';
 		elsif(clk'event and clk='1') then
-			if(IDEXWrite='0') then
-				localImm<=Immin;
-				localPC<=PCin;
-				localR1<=R1in;
-				localR2<=R2in;
-				localRegDst<=RegDstin;
-				localdata1<=data1in;
-				localdata2<=data2in;
-				localSPdata<=SPdatain;
-				localTdata<=Tdatain;
-				localIHdata<=IHdatain;
-				localALUSrc<=ALUSrcin;
-				localALUSrc2<=ALUSrc2in;
-				localALUOP<=ALUOPin;
-				localRegDst<=RegDstin;
-				localMemRead<=MemReadin;
-				localMemWrite<=MemWritein;
-				localBranch<=Branchin;
-				localMemtoReg<=MemtoRegin;
-				localRegWrite<=RegWritein;
-				localPCSrc2<=PCSrc2in;
-				localCommandOP<=CommandOPin;
-			end if;
+			case (state) is
+				when "00" =>
+					if(IDEXWrite='1') then
+					localImm<=Immin;
+					localPC<=PCin;
+					localR1<=R1in;
+					localR2<=R2in;
+					localRegDst<=RegDstin;
+					localdata1<=data1in;
+					localdata2<=data2in;
+					localSPdata<=SPdatain;
+					localTdata<=Tdatain;
+					localIHdata<=IHdatain;
+					localALUSrc<=ALUSrcin;
+					localALUSrc2<=ALUSrc2in;
+					localALUOP<=ALUOPin;
+					localRegDst<=RegDstin;
+					localMemRead<=MemReadin;
+					localMemWrite<=MemWritein;
+					localBranch<=Branchin;
+					localMemtoReg<=MemtoRegin;
+					localRegWrite<=RegWritein;
+					localPCSrc2<=PCSrc2in;
+					localCommandOP<=CommandOPin;
+					end if;
+					state<="01";
+				when "01" =>
+					state<="10";
+				when "10" =>
+					state<="00";
+			end case;
 	end if;
 end process;
 end Behavioral;
