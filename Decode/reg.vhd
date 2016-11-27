@@ -41,7 +41,10 @@ entity reg is
            reg_out2 : out  STD_LOGIC_VECTOR (15 downto 0);
 			  PCRegister: in STD_LOGIC_VECTOR(15 downto 0);
            rst : in  STD_LOGIC;
-           clk : in  STD_LOGIC);
+           clk : in  STD_LOGIC;
+			  
+			  reg1zero : out STD_LOGIC_VECTOR(1 downto 0)
+			 );
 end reg;
 
 architecture Behavioral of Reg is
@@ -49,7 +52,9 @@ architecture Behavioral of Reg is
 	signal current_state : state := s0;
 	Type ar is array(15 downto 0) of STD_LOGIC_VECTOR (15 downto 0);
 	signal reg_mem : ar;
+	signal reg1_out_temp : STD_LOGIC_VECTOR(15 downto 0);
 begin
+	reg_out1 <= reg1_out_temp;
 	process(clk,rst) is
 	begin
 		if (rst = '0') then
@@ -65,9 +70,9 @@ begin
 					current_state <= s1;
 				when s1 =>
 					if ( reg_in1 = "1001") then
-						reg_out1 <= PCRegister;
+						reg1_out_temp <= PCRegister;
 					else
-						reg_out1 <= reg_mem(conv_integer(reg_in1));
+						reg1_out_temp <= reg_mem(conv_integer(reg_in1));
 					end if;
 					
 					if ( reg_in2 = "1001") then
@@ -79,7 +84,15 @@ begin
 			end case;
 		end if;
 	end process;
-				
+	
+	reg1EqualToZero : process(reg1_out_temp)
+	begin
+		if ( reg1_out_temp = "0000000000000000" ) then
+			reg1zero <= "01";
+		else
+			reg1zero <= "00";
+		end if;
+	end process;
 
 
 end Behavioral;
