@@ -3,15 +3,15 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity alu is
+entity Alu is
     Port ( 	op: in STD_LOGIC_VECTOR (3 downto 0);
     		A,B: in  STD_LOGIC_VECTOR (15 downto 0);
 			--led : out  STD_LOGIC_VECTOR (15 downto 0);
 			re: out  STD_LOGIC_VECTOR (15 downto 0)
 			);
-end alu;
+end Alu;
 
-architecture Behavioral of alu is
+architecture Behavioral of Alu is
 	shared variable tem:std_logic_vector(15 downto 0):="0000000000000000";
 begin
 	process

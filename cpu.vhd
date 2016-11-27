@@ -63,10 +63,10 @@ architecture Behavioral of CPU is
 			data1out : out STD_LOGIC_VECTOR (15 downto 0);
 			data2out : out STD_LOGIC_VECTOR (15 downto 0);
 			--E
-			ALUOPin : in STD_LOGIC_VECTOR(3 downto 0);
-			ALUOPout : out STD_LOGIC_VECTOR(3 downto 0);
-			ALUSrcin : in STD_LOGIC;
-			ALUSrcout : out STD_LOGIC;
+			AluOPin : in STD_LOGIC_VECTOR(3 downto 0);
+			AluOPout : out STD_LOGIC_VECTOR(3 downto 0);
+			AluSrcin : in STD_LOGIC;
+			AluSrcout : out STD_LOGIC;
 			--M
 			MemWritein : in STD_LOGIC;
 			MemWriteout : out STD_LOGIC;
@@ -86,8 +86,8 @@ architecture Behavioral of CPU is
 			rst : in STD_LOGIC;
 			Regin: in STD_LOGIC_VECTOR(3 downto 0);
 			Regout: out STD_LOGIC_VECTOR(3 downto 0);
-			ALUresultin: in STD_LOGIC_VECTOR(15 downto 0);
-			ALUresultout: out STD_LOGIC_VECTOR(15 downto 0);
+			Aluresultin: in STD_LOGIC_VECTOR(15 downto 0);
+			Aluresultout: out STD_LOGIC_VECTOR(15 downto 0);
 			data2in : in STD_LOGIC_VECTOR (15 downto 0);
 			data2out : out STD_LOGIC_VECTOR (15 downto 0);
 			--M
@@ -109,8 +109,8 @@ architecture Behavioral of CPU is
 			  rst : in STD_LOGIC;
 			  Regin: in STD_LOGIC_VECTOR(3 downto 0);
 			  Regout: out STD_LOGIC_VECTOR(3 downto 0);
-			  ALUresultin: in STD_LOGIC_VECTOR(15 downto 0);
-			  ALUresultout: out STD_LOGIC_VECTOR(15 downto 0);
+			  Aluresultin: in STD_LOGIC_VECTOR(15 downto 0);
+			  Aluresultout: out STD_LOGIC_VECTOR(15 downto 0);
 			  Memin: in STD_LOGIC_VECTOR(15 downto 0);
 			  Memout: out STD_LOGIC_VECTOR(15 downto 0);
 			  data2in : in STD_LOGIC_VECTOR (15 downto 0);
@@ -127,7 +127,7 @@ architecture Behavioral of CPU is
 	 Port ( data1 : in  STD_LOGIC_VECTOR (15 downto 0);--data2 from register
            data2 : in  STD_LOGIC_VECTOR (15 downto 0);--immediate
            AluSrc : in  STD_LOGIC;
-           ALUdata : out  STD_LOGIC_VECTOR (15 downto 0));
+           Aludata : out  STD_LOGIC_VECTOR (15 downto 0));
 	 end component;
 
 	 component Forward is
@@ -144,9 +144,9 @@ architecture Behavioral of CPU is
 	 component ForwardMUX is
 	 Port ( 	data1 : in  STD_LOGIC_VECTOR (15 downto 0);--Reg
            	data2 : in  STD_LOGIC_VECTOR (15 downto 0);--EX.re_Alu
-           	data3 :	in  STD_LOGIC_VECTOR (15 downto 0);--MEM.re_ALU/re_Mem
+           	data3 :	in  STD_LOGIC_VECTOR (15 downto 0);--MEM.re_Alu/re_Mem
 			forward: in STD_LOGIC_VECTOR (1 downto 0);           	
-			ALUdata : out  STD_LOGIC_VECTOR (15 downto 0));
+			Aludata : out  STD_LOGIC_VECTOR (15 downto 0));
 	 end component;
 
 	 component Alu is
@@ -170,10 +170,10 @@ architecture Behavioral of CPU is
 	 signal data1in_idex:STD_LOGIC_VECTOR(15 downto 0);
 	 signal data2in_idex:STD_LOGIC_VECTOR(15 downto 0);
 	 	--IDEX.E
-	 signal aluopout_idex:STD_LOGIC_VECTOR(3 downto 0);
-	 signal alusrcout_idex:STD_LOGIC;
-	 signal aluopin_idex:STD_LOGIC_VECTOR(3 downto 0);
-	 signal alusrcin_idex:STD_LOGIC;
+	 signal Aluopout_idex:STD_LOGIC_VECTOR(3 downto 0);
+	 signal Alusrcout_idex:STD_LOGIC;
+	 signal Aluopin_idex:STD_LOGIC_VECTOR(3 downto 0);
+	 signal Alusrcin_idex:STD_LOGIC;
 	 	--IDEX.M
 	 signal memwriteout_idex:STD_LOGIC;
 	 signal memreadout_idex:STD_LOGIC;
@@ -186,18 +186,18 @@ architecture Behavioral of CPU is
 	 signal regwritein_idex:STD_LOGIC;
 
 	 --E
-	 signal alusrc1_e:STD_LOGIC_VECTOR(15 downto 0);
-	 signal alusrc2_e:STD_LOGIC_VECTOR(15 downto 0);
+	 signal Alusrc1_e:STD_LOGIC_VECTOR(15 downto 0);
+	 signal Alusrc2_e:STD_LOGIC_VECTOR(15 downto 0);
 	 signal forwardA_e:STD_LOGIC_VECTOR(1 downto 0);
 	 signal forwardB_e:STD_LOGIC_VECTOR(1 downto 0);
 
 
 	 --EXMEMReg
 	 signal regout_exmem:STD_LOGIC_VECTOR(3 downto 0);
-	 signal ALUresultout_exmem:STD_LOGIC_VECTOR(15 downto 0);
+	 signal Aluresultout_exmem:STD_LOGIC_VECTOR(15 downto 0);
 	 signal data2out_exmem:STD_LOGIC_VECTOR (15 downto 0);
 	 signal regin_exmem:STD_LOGIC_VECTOR(3 downto 0);
-	 signal ALUresultin_exmem:STD_LOGIC_VECTOR(15 downto 0);
+	 signal Aluresultin_exmem:STD_LOGIC_VECTOR(15 downto 0);
 	 signal data2in_exmem:STD_LOGIC_VECTOR (15 downto 0);
 	 	--EXMEM.M
 	 signal memwriteout_exmem:STD_LOGIC;

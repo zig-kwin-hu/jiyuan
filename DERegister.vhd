@@ -18,10 +18,10 @@ entity DERegister is
 			data1out : out STD_LOGIC_VECTOR (15 downto 0);
 			data2out : out STD_LOGIC_VECTOR (15 downto 0);
 			--E
-			ALUOPin : in STD_LOGIC_VECTOR(3 downto 0);
-			ALUOPout : out STD_LOGIC_VECTOR(3 downto 0);
-			ALUSrcin : in STD_LOGIC;
-			ALUSrcout : out STD_LOGIC;
+			AluOPin : in STD_LOGIC_VECTOR(3 downto 0);
+			AluOPout : out STD_LOGIC_VECTOR(3 downto 0);
+			AluSrcin : in STD_LOGIC;
+			AluSrcout : out STD_LOGIC;
 			--M
 			MemWritein : in STD_LOGIC;
 			MemWriteout : out STD_LOGIC;
@@ -43,8 +43,8 @@ signal localR2: STD_LOGIC_VECTOR (3 downto 0);
 signal localRegDst: STD_LOGIC_VECTOR (3 downto 0);
 signal localdata1: STD_LOGIC_VECTOR (15 downto 0);
 signal localdata2: STD_LOGIC_VECTOR (15 downto 0);
-signal localALUSrc: STD_LOGIC;
-signal localALUOP: STD_LOGIC_VECTOR (3 downto 0);
+signal localAluSrc: STD_LOGIC;
+signal localAluOP: STD_LOGIC_VECTOR (3 downto 0);
 signal localMemRead: STD_LOGIC;
 signal localMemWrite: STD_LOGIC;
 signal localMemtoReg: STD_LOGIC;
@@ -58,8 +58,8 @@ R2out<=localR2;
 RegDstout<=localRegDst;
 data1out<=localdata1;
 data2out<=localdata2;
-ALUSrcout<=localALUSrc
-ALUOPout<=localALUOP;
+AluSrcout<=localAluSrc
+AluOPout<=localAluOP;
 MemReadout<=localMemRead;
 MemWriteout<=localMemWrite;
 MemtoRegout<=localMemtoReg;
@@ -73,8 +73,8 @@ begin
 			localRegDst<="0000";
 			localdata1<="0000000000000000";
 			localdata2<="0000000000000000";
-			localALUSrc<='0';
-			localALUOP<="0000";
+			localAluSrc<='0';
+			localAluOP<="0000";
 			localMemRead<='0';
 			localMemWrite<='0';
 			localMemtoReg<='0';
@@ -94,9 +94,9 @@ begin
 					localSPdata<=SPdatain;
 					localTdata<=Tdatain;
 					localIHdata<=IHdatain;
-					localALUSrc<=ALUSrcin;
-					localALUSrc2<=ALUSrc2in;
-					localALUOP<=ALUOPin;
+					localAluSrc<=AluSrcin;
+					localAluSrc2<=AluSrc2in;
+					localAluOP<=AluOPin;
 					localRegDst<=RegDstin;
 					localMemRead<=MemReadin;
 					localMemWrite<=MemWritein;
