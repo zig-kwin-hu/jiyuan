@@ -6,14 +6,14 @@ entity PCRegister is
 	port(
 			rst : in STD_LOGIC;
 			clk : in STD_LOGIC;
-			PCin : in STD_LOGIC_VECTOR(17 downto 0);
-			PCout : out STD_LOGIC_VECTOR(17 downto 0);
+			PCin : in STD_LOGIC_VECTOR(15 downto 0);
+			PCout : out STD_LOGIC_VECTOR(15 downto 0);
 			bubble : in STD_LOGIC
 		);
 end PCRegister;
 
 architecture Behavior of PCRegister is
-signal PClocal : STD_LOGIC_VECTOR(17 downto 0) := "000000000000000000";
+signal PClocal : STD_LOGIC_VECTOR(15 downto 0) := "0000000000000000";
 signal state : STD_LOGIC_VECTOR(1 downto 0) := "00";
 begin
 

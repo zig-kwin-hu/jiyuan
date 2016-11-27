@@ -2,7 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_UNSIGNED.all;
 
-entity PCMem is 
+entity PCSim is 
 port(
 		rst : in STD_LOGIC;
 		clk : in STD_LOGIC;
@@ -15,9 +15,9 @@ port(
 		PCout : out STD_LOGIC_VECTOR(15 downto 0);
 		bubble : in STD_LOGIC
 	);
-end PCMem;
+end PCSim;
 
-architecture Behavior of PCMem is
+architecture Behavior of PCSim is
 signal state : STD_LOGIC_VECTOR(1 downto 0) := "00";
 
 begin
@@ -49,6 +49,14 @@ process(clk)
 			when "10" =>
 				if(bubble = '0') then
 					ram2_oe <= '0';
+					case PCaddress(2 downto 0) is
+						when "00" =>
+							ram2data <= "0110100000000001";
+						when "01" =>
+							ram2data <= "0110100100000010";
+						when "10" =>
+							ram2data <= "1110000000101001";
+					end case;
 				end if;
 				state <= "00";
 		end case;	
