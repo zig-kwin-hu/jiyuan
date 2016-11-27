@@ -19,7 +19,7 @@ begin
 
 PCout <= PClocal;
 process (clk)
-if(rst = '1') then
+if(rst = '0') then
 	state <= "00";
 elsif clk'event and clk = '1' then
 	case state

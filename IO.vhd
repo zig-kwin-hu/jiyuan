@@ -36,7 +36,7 @@ begin
 	end if;
 process(clk)
 begin
-	if (rst = '1') then
+	if (rst = '0') then
 		ram1_en <= '1';
 		ram1_we <= '1';
 		ram2_oe <= '1';

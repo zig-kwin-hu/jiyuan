@@ -27,7 +27,7 @@ else
 	PCout <= "0000100000000000";
 end if;
 process(clk)
-	if(rst = '1') then
+	if(rst = '0') then
 		ram2_en <= '1';
 		ram2_we <= '1';
 		ram2_oe <= '1';
