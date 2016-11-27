@@ -79,6 +79,7 @@ begin
 			localMemWrite<='0';
 			localMemtoReg<='0';
 			localRegWrite<='0';
+			state<="00";
 		elsif(clk'event and clk='1') then
 			case (state) is
 				when "00" =>
