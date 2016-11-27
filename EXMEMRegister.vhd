@@ -42,7 +42,7 @@ RegDestout <= RegDestlocal;
 
 process(clk)
 begin
-	if(rst = '0') then
+	if(rst = '1') then
 		MemReadlocal <= '0';
 		MemWritelocal <= '0';
 		MemToReglocal <= "00";

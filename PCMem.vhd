@@ -31,6 +31,7 @@ process(clk)
 		ram2_en <= '1';
 		ram2_we <= '1';
 		ram2_oe <= '1';
+		state <="00";
 	elsif clk'event and clk = '1' then
 		case state is
 			when "00" =>
