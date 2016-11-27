@@ -31,6 +31,7 @@ entity ID_topmodual is
     clk 				: in STD_LOGIC;
     rst 				: in STD_LOGIC;
     PCin 			: in STD_LOGIC_VECTOR(15 downto 0);
+	 PCRegister		: in STD_LOGIC_VECTOR(15 downto 0);
 	 
 	 Reg1_out 		: out STD_LOGIC_VECTOR(15 downto 0);
 	 Reg2_out 		: out STD_LOGIC_VECTOR(15 downto 0);
@@ -110,6 +111,7 @@ component reg is
            reg_write_signal : in  STD_LOGIC;
            reg_out1 : out  STD_LOGIC_VECTOR (15 downto 0);
            reg_out2 : out  STD_LOGIC_VECTOR (15 downto 0);
+			  PCRegister		: in STD_LOGIC_VECTOR(15 downto 0);
            rst : in  STD_LOGIC;
            clk : in  STD_LOGIC);
 end component reg;
@@ -154,6 +156,7 @@ begin
 		reg_write_signal => reg_write_signal,
 		reg_out1 => Reg1_out,
 		reg_out2 => Reg2_out,
+		PCRegister => PCRegister,
 		
 		clk => clk,
 		rst => rst
