@@ -71,12 +71,16 @@ begin
 				when s1 =>
 					if ( reg_in1 = "1001") then
 						reg1_out_temp <= PCRegister;
+					elsif( reg_in1 = "1100" ) then
+						reg1_out_temp <= "0000000000000000";
 					else
 						reg1_out_temp <= reg_mem(conv_integer(reg_in1));
 					end if;
 					
 					if ( reg_in2 = "1001") then
 						reg_out2 <= PCRegister;
+					elsif( reg_in2 = "1100" ) then
+						reg_out2 <= "0000000000000000";
 					else
 						reg_out2 <= reg_mem(conv_integer(reg_in2));
 					end if;

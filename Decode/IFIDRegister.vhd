@@ -155,13 +155,12 @@ begin
 								RegWrite <= '1';
 								
 							when "00010" => --B
-								Reg1  (3 downto 0)<= "1001";
+								Reg1  (3 downto 0)<= "1111";
 								Reg2  (3 downto 0)<= "1111";
 								ALUOP (3 downto 0)<= "0000";
 								ALUSRC				<= '1';
 								RegDst(3 downto 0)<= "1111";
 								
-								--immediate unused
 								immediate	(10 downto 0)<= PCin(10 downto 0);
 								immediate_n	(2 downto 0) <= "100";
 								immediate_arith			 <= '1';
@@ -179,7 +178,6 @@ begin
 								ALUSRC				<= '1';
 								RegDst(3 downto 0)<= "1111";
 								
-								--immediate unused
 								immediate	(7 downto 0)<= PCin(7 downto 0);
 								immediate_n	(2 downto 0)<= "011";
 								immediate_arith			<= '1';
