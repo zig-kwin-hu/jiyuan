@@ -240,6 +240,38 @@ port(
 	);
 end component;
 
+--ID_topmodual component
+component ID_topmodual is
+port(
+		IFIDWrite 		: in STD_LOGIC; -- unused now
+    	clk 				: in STD_LOGIC;
+    	rst 				: in STD_LOGIC;
+    	PCin 			: in STD_LOGIC_VECTOR(15 downto 0);
+		PCRegister		: in STD_LOGIC_VECTOR(15 downto 0);
+		 
+		Reg1_out 		: out STD_LOGIC_VECTOR(15 downto 0);
+		Reg2_out 		: out STD_LOGIC_VECTOR(15 downto 0);
+		ALUOP 			: out STD_LOGIC_VECTOR(3 downto 0);
+		ALUSRC 			: out STD_LOGIC;
+		RegDst 			: out STD_LOGIC_VECTOR(3 downto 0);
+		immediate_out	: out STD_LOGIC_VECTOR(15 downto 0);
+		immediate_in2	: out STD_LOGIC_VECTOR(10 downto 0); -- signal for debug
+		MemRead			: out STD_LOGIC;
+		MemWrite		: out STD_LOGIC;
+		MemToReg		: out STD_LOGIC_VECTOR(1 downto 0);
+		RegWrite		: out STD_LOGIC;
+		PCout			: out STD_LOGIC_VECTOR(15 downto 0);
+	 
+    	reg_write_loc 	: in  STD_LOGIC_VECTOR (3 downto 0);
+    	reg_write_data 	: in  STD_LOGIC_VECTOR (15 downto 0);
+    	reg_write_signal : in  STD_LOGIC;
+	 
+		isBubble : in STD_LOGIC;
+	 
+		jmp	: out STD_LOGIC
+	);
+end component;
+
 --FDReg
 signal pcin_fd : STD_LOGIC_VECTOR(15 downto 0);
 signal pcout_fd : STD_LOGIC_VECTOR(15 downto 0);
@@ -328,7 +360,8 @@ signal	pcchooseout : STD_LOGIC_VECTOR(15 downto 0);
 
 --PCRegister signal
 signal pcregisterout : STD_LOGIC_VECTOR(15 downto 0);
-signal pcbubble : STD_LOGIC := '0';
+signal isbubble_pc_fd : STD_LOGIC := '0';
+signal isbubble_pcregister : STD_LOGIC := '0';
 
 --PCMem signal
 --signal pcmemout : STD_LOGIC_VECTOR(15 downto 0);
@@ -347,12 +380,17 @@ signal aludata_alusrc : STD_LOGIC_VECTOR(15 downto 0);
 --ToRegMux signal
 signal result_toregmux : STD_LOGIC_VECTOR(15 downto 0);
 
+--ID_topmodual signal
+signal ifidwrite_id_topmodual : STD_LOGIC := '1';
+
 --maoxian signal
-signal registerbubble : STD_LOGIC := '0';
+signal isbubble_pc_fd_de : STD_LOGIC := '0';
 
 begin
+isbubble_pcregister <= isbubble_pc_fd or isbubble_pc_fd_de;
 process
-if((memwrite or memread) and ((ioaddressin <= x"7FFF") and (ioaddressin >= x"4000"))) then
+begin
+if((memwriteout_exmem or memreadout_exmem) and ((ALUresultout_exmem <= x"7FFF") and (ALUresultout_exmem >= x"4000"))) then
 	pcbubble <= '1';
 else
 	pcbubble <= '0';
@@ -372,7 +410,7 @@ PCRegister_comp:PCRegister port map(
 		clk => clk,
 		PCin => pcchooseout,
 		PCout => pcregisterout,
-		bubble => pcbubble
+		bubble => isbubble_pcregister
 	);
 
 --PCMem port map
@@ -386,7 +424,8 @@ PCSim_comp:PCSim port map(
 		ram2_we => ram2WE,
 		ram2_oe => ram2OE,
 		PCout => commandin_fd,
-		bubble => pcbubble
+		bubble => isbubble_pc_fd
+
 	);
 
 --PCAdd1 port map
@@ -397,7 +436,7 @@ PCAdd1_comp:PCAdd1 port map(
 
 --FDRegister port map
 FDRegister_comp:FDRegister port map(
-		IsBubble => registerbubble,
+		IsBubble => isbubble_pc_fd_de,
 		clk => clk,
 		rst => rst,
         PCin => pcin_fd,
@@ -555,7 +594,37 @@ ToRegMux_comp:ToRegMux port map(
 		MemToReg => memtoregout_memwri,
 		MemResult => memout_memwri,
 		ALUResult => aluresultout_memwri,
-		RegResult => regout_memwri,
+		RegResult => data2out_memwri,
 		Result => result_toregmux
+	);
+
+--ID_topmodual 
+ID_topmodual_comp:ID_topmodual port map(
+		IFIDWrite =>  ifidwrite_id_topmodual -- unused now
+    	clk => clk,
+    	rst => rst,
+    	PCin => commandout_fd,
+		PCRegister	=> pcout_fd,
+		
+		Reg1_out => r1in_idex,
+		Reg2_out => r2in_idex,
+		ALUOP => aluopin_idex,
+		ALUSRC => alusrcin_idex,
+		RegDst => regdstin_idex,
+		immediate_out => immin_idex,
+		immediate_in2 =>  -- signal for debug
+		MemRead	=> memreadin_idex,
+		MemWrite => memwritein_idex,
+		MemToReg => memtoregin_idex,
+		RegWrite => regwritein_idex,
+		PCout => pcjump,
+	
+    	reg_write_loc => regout_memwri,
+    	reg_write_data => result_toregmux,
+    	reg_write_signal => regwriteout_memwri,
+	 
+		isBubble => isbubble_pc_fd_de,
+	 
+		jmp	=> pcsrc
 	);
 end Behavioral;
