@@ -16,24 +16,24 @@ architecture Behavioral of Forward is
 
 begin
 
-process 
-begin 
-	if (MEMWBRegWrite='1' and MEMWBrd/="1111" and not(EXMEMRegWrite='1' and EXMEMrd/="1111" and EXMEMrd=IDEXrx) and MEMWBrd=IDEXrx) then
-		ForwardA<="01";
-	elsif (EXMEMRegWrite='1' and EXMEMrd/="1111" and EXMEMrd=IDEXrx) then
-		ForwardA<="10";
-	else
-		ForwardA<="00";
-	end if;
-			
-	if (MEMWBRegWrite='1' and MEMWBrd/="1111" and not(EXMEMRegWrite='1' and EXMEMrd/="1111" and EXMEMrd=IDEXry) and MEMWBrd=IDEXry) then
-		ForwardB<="01";
-	elsif (EXMEMRegWrite='1' and EXMEMrd/="1111" and EXMEMrd=IDEXry) then
-		ForwardB<="10";
-	else
-		ForwardB<="00";
-	end if;
-end process;
+	process(MEMWBRegWrite, EXMEMRegWrite, EXMEMrd, MEMWBrd, IDEXrx, IDEXry)
+	begin 
+		if (MEMWBRegWrite='1' and MEMWBrd/="1111" and not(EXMEMRegWrite='1' and EXMEMrd/="1111" and EXMEMrd=IDEXrx) and MEMWBrd=IDEXrx) then
+			ForwardA<="01";
+		elsif (EXMEMRegWrite='1' and EXMEMrd/="1111" and EXMEMrd=IDEXrx) then
+			ForwardA<="10";
+		else
+			ForwardA<="00";
+		end if;
+				
+		if (MEMWBRegWrite='1' and MEMWBrd/="1111" and not(EXMEMRegWrite='1' and EXMEMrd/="1111" and EXMEMrd=IDEXry) and MEMWBrd=IDEXry) then
+			ForwardB<="01";
+		elsif (EXMEMRegWrite='1' and EXMEMrd/="1111" and EXMEMrd=IDEXry) then
+			ForwardB<="10";
+		else
+			ForwardB<="00";
+		end if;
+	end process;
 
 end Behavioral;
 

@@ -17,24 +17,26 @@ signal PClocal : STD_LOGIC_VECTOR(15 downto 0) := "1111111111111111";
 signal state : STD_LOGIC_VECTOR(1 downto 0) := "00";
 begin
 
-PCout <= PClocal;
-process (clk)
-begin
-if(rst = '0') then
-	state <= "00";
-elsif clk'event and clk = '1' then
-	case state
-		when "00" =>
-			if(bubble = '0')then
-				PClocal <= PCin;
-			end if;
-			state <= "01";
-		when "01" =>
-			state <= "10";
-		when "10" =>
-			state <= "00";
-	end case;
-end if;
-end process;
+	PCout <= PClocal;
+	process (clk, rst)
+	begin
+	if(rst = '0') then
+		state <= "00";
+	elsif clk'event and clk = '1' then
+		case state is
+			when "00" =>
+				if(bubble = '0')then
+					PClocal <= PCin;
+				end if;
+				state <= "01";
+			when "01" =>
+				state <= "10";
+			when "10" =>
+				state <= "00";
+			when others =>
+				state <= "00";
+		end case;
+	end if;
+	end process;
 
 end Behavior;
