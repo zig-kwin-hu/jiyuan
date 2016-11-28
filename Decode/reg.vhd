@@ -39,7 +39,7 @@ entity reg is
            reg_write_signal : in  STD_LOGIC;
            reg_out1 : out  STD_LOGIC_VECTOR (15 downto 0);
            reg_out2 : out  STD_LOGIC_VECTOR (15 downto 0);
-			  PCRegister: in STD_LOGIC_VECTOR(15 downto 0);
+			  PCin: in STD_LOGIC_VECTOR(15 downto 0);
            rst : in  STD_LOGIC;
            clk : in  STD_LOGIC;
 			  
@@ -70,7 +70,7 @@ begin
 					current_state <= s1;
 				when s1 =>
 					if ( reg_in1 = "1001") then
-						reg1_out_temp <= PCRegister;
+						reg1_out_temp <= PCin;
 					elsif( reg_in1 = "1100" ) then
 						reg1_out_temp <= "0000000000000000";
 					else
@@ -78,7 +78,7 @@ begin
 					end if;
 					
 					if ( reg_in2 = "1001") then
-						reg_out2 <= PCRegister;
+						reg_out2 <= PCin;
 					elsif( reg_in2 = "1100" ) then
 						reg_out2 <= "0000000000000000";
 					else

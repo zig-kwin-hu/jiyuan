@@ -31,7 +31,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 --use UNISIM.VComponents.all;
 
 entity ID_ADD is
-    Port ( PCRegister : in  STD_LOGIC_VECTOR (15 downto 0);
+    Port ( PCin : in  STD_LOGIC_VECTOR (15 downto 0);
            immediate : in  STD_LOGIC_VECTOR (15 downto 0);
            PC_calc : out  STD_LOGIC_VECTOR (15 downto 0));
 end ID_ADD;
@@ -39,9 +39,9 @@ end ID_ADD;
 architecture Behavioral of ID_ADD is
 
 begin
-	process(PCRegister, immediate) is
+	process(PCin, immediate) is
 	begin
-		PC_calc <= PCRegister + immediate;
+		PC_calc <= PCin + immediate;
 	end process;
 
 end Behavioral;

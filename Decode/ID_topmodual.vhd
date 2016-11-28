@@ -30,11 +30,13 @@ entity ID_topmodual is
     IFIDWrite 		: in STD_LOGIC; -- unused now
     clk 				: in STD_LOGIC;
     rst 				: in STD_LOGIC;
-    PCin 			: in STD_LOGIC_VECTOR(15 downto 0);
-	 PCRegister		: in STD_LOGIC_VECTOR(15 downto 0);
+    CommandIn 		: in STD_LOGIC_VECTOR(15 downto 0);
+	 PCin				: in STD_LOGIC_VECTOR(15 downto 0);
 	 
-	 Reg1_out 		: out STD_LOGIC_VECTOR(15 downto 0);
-	 Reg2_out 		: out STD_LOGIC_VECTOR(15 downto 0);
+	 Data1_out 		: out STD_LOGIC_VECTOR(15 downto 0);
+	 Data2_out 		: out STD_LOGIC_VECTOR(15 downto 0);
+	 Reg1_out		: out STD_LOGIC_VECTOR(3 downto 0);
+	 Reg2_out		: out STD_LOGIC_VECTOR(3 downto 0);
 	 ALUOP 			: out STD_LOGIC_VECTOR(3 downto 0);
 	 ALUSRC 			: out STD_LOGIC;
 	 RegDst 			: out STD_LOGIC_VECTOR(3 downto 0);
@@ -69,7 +71,7 @@ component IFIDRegister is
     IFIDWrite 		: in STD_LOGIC;
     clk 				: in STD_LOGIC;
     rst 				: in STD_LOGIC;
-    PCin 			: in STD_LOGIC_VECTOR(15 downto 0);
+    CommandIn 		: in STD_LOGIC_VECTOR(15 downto 0);
 	 
 	 Reg1 			: out STD_LOGIC_VECTOR(3 downto 0);
 	 Reg2 			: out STD_LOGIC_VECTOR(3 downto 0);
@@ -98,7 +100,7 @@ end component IFIDRegister;
 signal Reg1 : STD_LOGIC_VECTOR(3 downto 0);
 signal Reg2 : STD_LOGIC_VECTOR(3 downto 0);
 
-signal Reg1out_temp : STD_LOGIC_VECTOR(15 downto 0);
+signal Data1out_temp : STD_LOGIC_VECTOR(15 downto 0);
 
 --IFIDRegister - immediate_expand
 signal immediate_in		: STD_LOGIC_VECTOR(10 downto 0);
@@ -128,7 +130,7 @@ component reg is
            reg_write_signal : in  STD_LOGIC;
            reg_out1 : out  STD_LOGIC_VECTOR (15 downto 0);
            reg_out2 : out  STD_LOGIC_VECTOR (15 downto 0);
-			  PCRegister		: in STD_LOGIC_VECTOR(15 downto 0);
+			  PCin	: in STD_LOGIC_VECTOR(15 downto 0);
            rst : in  STD_LOGIC;
            clk : in  STD_LOGIC;
 			  
@@ -139,7 +141,7 @@ end component reg;
 signal reg1zero_temp : STD_LOGIC_VECTOR(1 downto 0);
 
 component ID_ADD is
-    Port ( PCRegister : in  STD_LOGIC_VECTOR (15 downto 0);
+    Port ( PCin : in  STD_LOGIC_VECTOR (15 downto 0);
            immediate : in  STD_LOGIC_VECTOR (15 downto 0);
            PC_calc : out  STD_LOGIC_VECTOR (15 downto 0));
 end component ID_ADD;
@@ -161,14 +163,17 @@ component ID_JMPControl is
 end component ID_JMPControl;
 
 begin
-	immediate_in2 <= immediate_in;
-	Reg1_out <= Reg1out_temp;
+	immediate_in2 <= immediate_in; -- for debug
+	Data1_out <= Data1out_temp;
+	
+	Reg1_out <= Reg1;
+	Reg2_out <= Reg2;
 
 	IFIDRegister_comp: IFIDRegister port map(
 		IFIDWrite => IFIDWrite,
 		clk => clk,
 		rst => rst,
-		PCin => PCin,
+		CommandIn => CommandIn,
 		Reg1 => Reg1,
 		Reg2 => Reg2,
 		ALUOP => ALUOP,
@@ -205,9 +210,9 @@ begin
 		reg_write_loc => reg_write_loc,
 		reg_write_data => reg_write_data,
 		reg_write_signal => reg_write_signal,
-		reg_out1 => Reg1out_temp, --Caution!
-		reg_out2 => Reg2_out,
-		PCRegister => PCRegister,
+		reg_out1 => Data1out_temp, --Caution!
+		reg_out2 => Data2_out,
+		PCin => PCin,
 		
 		clk => clk,
 		rst => rst,
@@ -215,14 +220,14 @@ begin
 	);
 	
 	ID_ADD_comp : ID_ADD port map(
-		PCRegister => PCRegister,
+		PCin => PCin,
 	   immediate => immediate_res,
 	   PC_calc => PC_calc_res
 	);
 	
 	ID_PCselector_comp : ID_PCselector port map(
 		PC_calc_res => PC_calc_res,
-      Register_in => Reg1out_temp,
+      Register_in => Data1out_temp,
       PCout => PCout,
 		isJRorder => isJRorder_temp
 	);
