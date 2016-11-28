@@ -13,12 +13,13 @@ entity PCRegister is
 end PCRegister;
 
 architecture Behavior of PCRegister is
-signal PClocal : STD_LOGIC_VECTOR(15 downto 0) := "0000000000000000";
+signal PClocal : STD_LOGIC_VECTOR(15 downto 0) := "1111111111111111";
 signal state : STD_LOGIC_VECTOR(1 downto 0) := "00";
 begin
 
 PCout <= PClocal;
 process (clk)
+begin
 if(rst = '0') then
 	state <= "00";
 elsif clk'event and clk = '1' then

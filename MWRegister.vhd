@@ -49,7 +49,7 @@ begin
 		localRegWrite<='0';
 		localdata2<="0000000000000000";
 	elsif(clk'event and clk='1') then
-		if(MEMWBWrite='0') then
+		if(MEMWBWrite='1') then
 		localReg<=Regin;
 		localALUresult<=ALUresultin;
 		localMem<=Memin;

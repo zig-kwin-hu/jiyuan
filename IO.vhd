@@ -20,7 +20,6 @@ entity IO is
 		ram2_we			: out std_logic;
 		addressram2 : out STD_LOGIC_VECTOR(17 downto 0);
 		dataram2 : inout STD_LOGIC_VECTOR(15 downto 0);
-		PCbubble : out STD_LOGIC;
 		dataout : out STD_LOGIC_VECTOR(15 downto 0)
 		);
 end IO;
@@ -29,11 +28,13 @@ architecture Behavior of IO is
 signal state : STD_LOGIC_VECTOR(1 downto 0) := "00";
 
 begin
+process
 	if(address <= x"FFFF" and address >= x"C000") then
 		dataout <= dataram1;
 	elsif address <= x"7FFF" and address >= x"4000" then
 		dataout <= dataram2;
 	end if;
+end process;
 process(clk)
 begin
 	if (rst = '0') then
@@ -43,7 +44,7 @@ begin
 		ram2_en <= '1';
 		ram2_we <= '1';
 		ram2_oe <= '1';
-		PCbubble <= '0';
+		--PCbubble <= '0';
 		state <= "00";
 	elsif (clk'event and clk = '1') then
 		if(state = "00") then
@@ -52,7 +53,7 @@ begin
 			--ram1_en <= '0';
 			ram2_we <= '1';
 			ram2_oe <= '1';
-			PCbubble <= '0';
+			--PCbubble <= '0';
 			--ram2_en <= '0';
 			state <= "01";
 		else			
@@ -74,7 +75,7 @@ begin
 				elsif address <= x"7FFF" and address >= x"4000" then
 					case state is
 						when "01" =>
-							PCbubble <= '1';
+							--PCbubble <= '1';
 							addressram2(15 downto 0) <= address;
 							addressram2(17 downto 16) <= "00";
 							dataram2 <= "ZZZZZZZZZZZZZZZZ";
@@ -105,7 +106,7 @@ begin
 				elsif address <= x"7FFF" and address >= x"4000" then
 					case state is
 						when "01" =>
-							PCbubble <= '1';
+							--PCbubble <= '1';
 							addressram2(15 downto 0) <= address;
 							addressram2(17 downto 16) <= "00";
 							dataram2 <= "ZZZZZZZZZZZZZZZZ";

@@ -1,7 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity ALUSrcMUX is
+entity AluSrcMUX is
     Port ( data1 : in  STD_LOGIC_VECTOR (15 downto 0);--data2 from register
            data2 : in  STD_LOGIC_VECTOR (15 downto 0);--immediate
            AluSrc : in  STD_LOGIC;

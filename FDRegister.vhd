@@ -8,7 +8,7 @@ entity FDRegister is
            	PCin : in  STD_LOGIC_VECTOR (15 downto 0);
 			PCout : out STD_LOGIC_VECTOR (15 downto 0);
            	Commandin : in  STD_LOGIC_VECTOR (15 downto 0);
-           	Commandout : inout  STD_LOGIC_VECTOR (15 downto 0);
+           	Commandout : inout  STD_LOGIC_VECTOR (15 downto 0)
            	);
 end FDRegister;
 

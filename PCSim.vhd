@@ -22,12 +22,16 @@ signal state : STD_LOGIC_VECTOR(1 downto 0) := "00";
 
 begin
 ram2address(17 downto 16) <= "00";
+process
+begin
 if(bubble = '0') then
 	PCout <= ram2data;
 else
 	PCout <= "0000100000000000";
 end if;
+end process;
 process(clk)
+	begin
 	if(rst = '0') then
 		ram2_en <= '1';
 		ram2_we <= '1';
@@ -39,7 +43,7 @@ process(clk)
 				state <= "01";
 			when "01" =>
 				if(bubble = '0') then
-					ram2_en <= '0';
+					ram2_en <= '1';
 					ram2_we <= '1';
 					ram2_oe <= '1';
 					ram2address(15 downto 0) <= PCaddress;
@@ -48,7 +52,7 @@ process(clk)
 				state <= "10";
 			when "10" =>
 				if(bubble = '0') then
-					ram2_oe <= '0';
+					
 					case PCaddress(2 downto 0) is
 						when "00" =>
 							ram2data <= "0110100000000001";

@@ -79,7 +79,7 @@ begin
 			localMemtoReg<='0';
 			localRegWrite<='0';
 		elsif(clk'event and clk='1') then
-			if(IDEXWrite='0') then
+			if(IDEXWrite='1') then
 				localImm<=Immin;
 				localPC<=PCin;
 				localR1<=R1in;
