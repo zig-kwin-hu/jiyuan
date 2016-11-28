@@ -15,11 +15,11 @@ begin
 process 
 begin
 	if(forward="00") then
-		Aludata<=data1;
-	elsif (forward="10")
-		Aludata<=data2;
-	elsif (forward="01")
-		Aludata<=data3;
+		Aludata <= data1;
+	elsif (forward="10") then
+		Aludata <= data2;
+	elsif (forward="01") then
+		Aludata <= data3;
 	end if;
 end process;
 

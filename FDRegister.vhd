@@ -15,7 +15,7 @@ end FDRegister;
 architecture Behavioral of FDRegister is
 Signal localPC:STD_LOGIC_VECTOR (15 downto 0);
 Signal localCommand:STD_LOGIC_VECTOR (15 downto 0);
-Signal state:STD_LOGIC_VECTOR(2 downto 0);
+Signal state:STD_LOGIC_VECTOR(1 downto 0) := "00";
 begin
 	Commandout<=localCommand;
 	PCout<=localPC;
@@ -25,7 +25,7 @@ begin
 	if(rst='0')then
 		localCommand<="0000000000000000";
 		localPC<="0000000000000000";
-		state<="00"
+		state<="00";
 	elsif(clk'event and clk='1') then
 		case (state) is
 			when "00"=>
@@ -38,6 +38,8 @@ begin
 				state<="10";
 			when "10"=>
 				state<="00";
+			when others =>
+				state <= "00";
 		end case;
 	end if;
 end process;

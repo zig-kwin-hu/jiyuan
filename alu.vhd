@@ -22,7 +22,7 @@ begin
 			when "0001" =>
 				re<=A + B;
 			when "0010" =>
-				re<=A AND B
+				re<=A AND B;
 			when "0011" =>
 				re<=A - B;
 			when "0100" =>

@@ -14,10 +14,10 @@ begin
 process 
 begin
 	case AluSrc is
-	when "0"=>--0 for data2 from register
-		Aludata1<=data1;
-	when "1"=>--1 for immediate
-		Aludata1<=data2;
+	when '0'=>--0 for data2 from register
+		Aludata<=data1;
+	when '1'=>--1 for immediate
+		Aludata<=data2;
 	when others=>
 	end case;
 end process;
