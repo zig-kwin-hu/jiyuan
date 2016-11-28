@@ -48,7 +48,7 @@ entity reg is
 end reg;
 
 architecture Behavioral of Reg is
-	Type state is (s0, s1);
+	Type state is (s0, s1, s2);
 	signal current_state : state := s0;
 	Type ar is array(15 downto 0) of STD_LOGIC_VECTOR (15 downto 0);
 	signal reg_mem : ar;
@@ -80,6 +80,8 @@ begin
 					else
 						reg_out2 <= reg_mem(conv_integer(reg_in2));
 					end if;
+					current_state <= s2;
+				when s2 =>
 					current_state <= s0;
 			end case;
 		end if;

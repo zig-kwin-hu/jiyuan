@@ -27,7 +27,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity ID_topmodual is
 	Port( 
-    IFIDWrite 		: in STD_LOGIC;
+    IFIDWrite 		: in STD_LOGIC; -- unused now
     clk 				: in STD_LOGIC;
     rst 				: in STD_LOGIC;
     PCin 			: in STD_LOGIC_VECTOR(15 downto 0);
@@ -39,7 +39,7 @@ entity ID_topmodual is
 	 ALUSRC 			: out STD_LOGIC;
 	 RegDst 			: out STD_LOGIC_VECTOR(3 downto 0);
 	 immediate_out	: out STD_LOGIC_VECTOR(15 downto 0);
-	 immediate_in2	: out STD_LOGIC_VECTOR(10 downto 0);
+	 immediate_in2	: out STD_LOGIC_VECTOR(10 downto 0); -- signal for debug
 	 MemRead			: out STD_LOGIC;
 	 MemWrite		: out STD_LOGIC;
 	 MemToReg		: out STD_LOGIC_VECTOR(1 downto 0);

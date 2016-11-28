@@ -60,7 +60,7 @@ entity IFIDRegister is
 end IFIDRegister;
 
 architecture Behavioral of IFIDRegister is
-	Type state is (s0, s1);
+	Type state is (s0, s1, s2);
 	signal current_state 	: state := s0;
 	signal control_first5 	: STD_LOGIC_VECTOR(4 downto 0); --first 5 of PC
 	signal control_first8 	: STD_LOGIC_VECTOR(7 downto 0); --first 8 of PC
@@ -596,6 +596,8 @@ begin
 						
 						current_state <= s1;
 					when s1 =>
+						current_state <= s2;
+					when s2 =>
 						current_state <= s0;
 				end case;
 			end if;

@@ -40,7 +40,7 @@ entity immediate_expand is
 end immediate_expand;
 
 architecture Behavioral of immediate_expand is
-	Type state is (s0, s1);
+	Type state is (s0, s1, s2);
 	signal current_state : state := s0;
 begin
 	process(clk,rst) is
@@ -86,6 +86,8 @@ begin
 							
 						when others => --error
 					end case;
+					current_state <= s2;
+				when s2 =>
 					current_state <= s0;
 			end case;
 		end if;
