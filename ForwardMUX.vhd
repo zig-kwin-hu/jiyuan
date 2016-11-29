@@ -12,15 +12,15 @@ end ForwardMUX;
 architecture Behavioral of ForwardMUX is
 
 begin
-process 
-begin
-	if(forward="00") then
-		Aludata <= data1;
-	elsif (forward="10") then
-		Aludata <= data2;
-	elsif (forward="01") then
-		Aludata <= data3;
-	end if;
-end process;
+	process (forward, data1, data2, data3)
+	begin
+		if(forward="00") then
+			Aludata <= data1;
+		elsif (forward="10") then
+			Aludata <= data2;
+		elsif (forward="01") then
+			Aludata <= data3;
+		end if;
+	end process;
 
 end Behavioral;

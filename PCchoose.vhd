@@ -13,12 +13,12 @@ end PCchoose;
 
 architecture Behavior of PCchoose is
 begin
-process
-begin
-	if(PCsrc = '1') then
-		PCout <= PCjump;
-	else 
-		PCout <= PCadd1;
-	end if;
-end process;
+	process (PCsrc, PCjump, PCadd1)
+	begin
+		if(PCsrc = '1') then
+			PCout <= PCjump;
+		else 
+			PCout <= PCadd1;
+		end if;
+	end process;
 end Behavior;

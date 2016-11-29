@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date:    20:33:14 11/27/2016 
+-- Create Date:    21:38:19 11/27/2016 
 -- Design Name: 
--- Module Name:    ID_ADD - Behavioral 
+-- Module Name:    ID_JMPControl - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -19,7 +19,6 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -30,18 +29,23 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity ID_ADD is
-    Port ( PCin : in  STD_LOGIC_VECTOR (15 downto 0);
-           immediate : in  STD_LOGIC_VECTOR (15 downto 0);
-           PC_calc : out  STD_LOGIC_VECTOR (15 downto 0));
-end ID_ADD;
+entity ID_JMPControl is
+    Port ( isJmporder 		: in  STD_LOGIC_VECTOR (1 downto 0);
+           regEqualToZero 	: in  STD_LOGIC_VECTOR (1 downto 0);
+           jmp 				: out  STD_LOGIC);
+end ID_JMPControl;
 
-architecture Behavioral of ID_ADD is
-
+architecture Behavioral of ID_JMPControl is
+signal result : STD_LOGIC_VECTOR(1 downto 0);
 begin
-	process(PCin, immediate) is
+	result <= isJmporder or regEqualToZero;
+	jmpprocess : process(result)
 	begin
-		PC_calc <= PCin + immediate;
+		if (result = "11") then
+			jmp <= '1';
+		else
+			jmp <= '0';
+		end if;
 	end process;
 
 end Behavioral;

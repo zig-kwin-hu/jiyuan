@@ -37,35 +37,36 @@ end DERegister;
 
 architecture Behavioral of DERegister is
 
-signal localImm: STD_LOGIC_VECTOR(15 downto 0);
-signal localR1: STD_LOGIC_VECTOR(3 downto 0);
-signal localR2: STD_LOGIC_VECTOR (3 downto 0);
-signal localRegDst: STD_LOGIC_VECTOR (3 downto 0);
-signal localdata1: STD_LOGIC_VECTOR (15 downto 0);
-signal localdata2: STD_LOGIC_VECTOR (15 downto 0);
-signal localAluSrc: STD_LOGIC;
-signal localAluOP: STD_LOGIC_VECTOR (3 downto 0);
-signal localMemRead: STD_LOGIC;
-signal localMemWrite: STD_LOGIC := '0';
-signal localMemtoReg: STD_LOGIC_VECTOR(1 downto 0);
-signal localRegWrite: STD_LOGIC := '0';
-signal state:STD_LOGIC_VECTOR(1 downto 0) := "00";
+	signal localImm: STD_LOGIC_VECTOR(15 downto 0);
+	signal localR1: STD_LOGIC_VECTOR(3 downto 0);
+	signal localR2: STD_LOGIC_VECTOR (3 downto 0);
+	signal localRegDst: STD_LOGIC_VECTOR (3 downto 0);
+	signal localdata1: STD_LOGIC_VECTOR (15 downto 0);
+	signal localdata2: STD_LOGIC_VECTOR (15 downto 0);
+	signal localAluSrc: STD_LOGIC;
+	signal localAluOP: STD_LOGIC_VECTOR (3 downto 0);
+	signal localMemRead: STD_LOGIC;
+	signal localMemWrite: STD_LOGIC := '0';
+	signal localMemtoReg: STD_LOGIC_VECTOR(1 downto 0);
+	signal localRegWrite: STD_LOGIC := '0';
+	signal state:STD_LOGIC_VECTOR(1 downto 0) := "00";
 
 begin
-Immout<=localImm;
-R1out<=localR1;
-R2out<=localR2;
-RegDstout<=localRegDst;
-data1out<=localdata1;
-data2out<=localdata2;
-AluSrcout<=localAluSrc;
-AluOPout<=localAluOP;
-MemReadout<=localMemRead;
-MemWriteout<=localMemWrite;
-MemtoRegout<=localMemtoReg;
-RegWriteout<=localRegWrite;
-process(clk,rst)
-begin
+	Immout<=localImm;
+	R1out<=localR1;
+	R2out<=localR2;
+	RegDstout<=localRegDst;
+	data1out<=localdata1;
+	data2out<=localdata2;
+	AluSrcout<=localAluSrc;
+	AluOPout<=localAluOP;
+	MemReadout<=localMemRead;
+	MemWriteout<=localMemWrite;
+	MemtoRegout<=localMemtoReg;
+	RegWriteout<=localRegWrite;
+	
+	process(clk,rst)
+	begin
 		if(rst='0') then
 			localImm<="0000000000000000";
 			localR1<="0000";
@@ -106,6 +107,6 @@ begin
 					state <="00";
 			end case;
 		end if;
-end process;
+	end process;
 end Behavioral;
 

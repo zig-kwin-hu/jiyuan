@@ -12,14 +12,14 @@ end ToRegMux;
 
 architecture Behavior of ToRegMux is
 begin
-process
-begin
-	if(MemToReg="00") then
-		Result <= MemResult;
-	elsif (MemToReg="01") then
-		Result <= ALUResult;
-	else
-		Result <= RegResult;
-	end if;		
-end process;
+	process(MemtoReg, MemResult, ALUResult, RegResult)
+	begin
+		if(MemToReg="00") then
+			Result <= MemResult;
+		elsif (MemToReg="01") then
+			Result <= ALUResult;
+		else
+			Result <= RegResult;
+		end if;		
+	end process;
 end Behavior;

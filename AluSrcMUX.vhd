@@ -11,16 +11,16 @@ end AluSrcMUX;
 architecture Behavioral of AluSrcMUX is
 
 begin
-process 
-begin
-	case AluSrc is
-	when '0'=>--0 for data2 from register
-		Aludata<=data1;
-	when '1'=>--1 for immediate
-		Aludata<=data2;
-	when others=>
-	end case;
-end process;
+	process(AluSrc, data1, data2)
+	begin
+		case AluSrc is
+		when '0'=>--0 for data2 from register
+			Aludata<=data1;
+		when '1'=>--1 for immediate
+			Aludata<=data2;
+		when others=>
+		end case;
+	end process;
 
 end Behavioral;
 

@@ -26,7 +26,12 @@ entity CPU is
          data2 : inout  STD_LOGIC_VECTOR (15 downto 0); --cpld返回的数据（指令�
          ram2OE : out  STD_LOGIC;
 			ram2WE : out  STD_LOGIC;
-         ram2EN : out  STD_LOGIC
+         ram2EN : out  STD_LOGIC;
+			
+			Light1 : out STD_LOGIC_VECTOR(7 downto 0); -- memtoreg
+			Light2 : out STD_LOGIC_VECTOR(3 downto 0); -- reg_loc
+			Light3 : out STD_LOGIC	--Memwrite
+			
 			
 			  );
 end CPU;
@@ -139,7 +144,12 @@ component Forward is
            	IDEXrx : in  STD_LOGIC_VECTOR (3 downto 0);--DE.R1
            	IDEXry : in  STD_LOGIC_VECTOR (3 downto 0);--DE.R2
            	ForwardA : out  STD_LOGIC_VECTOR (1 downto 0);
-           	ForwardB : out  STD_LOGIC_VECTOR (1 downto 0)
+           	ForwardB : out  STD_LOGIC_VECTOR (1 downto 0);
+			ForwardC : out STD_LOGIC_VECTOR(1 downto 0);--00-Reg,01-Mem.Re,10-WB.ToReg
+           	IsJROrder : in STD_LOGIC;
+			ISJumpOrder : in STD_LOGGIC_VECTOR(1 downto 0);
+           	IFIDR1 : in STD_LOGIC_VECTOR(3 downto 0);
+            EXMEMMemRead : in STD_LOGIC
            );
 end component;
 
@@ -187,11 +197,20 @@ port(
 		rst : in STD_LOGIC;
 		clk : in STD_LOGIC;
 		PCaddress : in STD_LOGIC_VECTOR(15 downto 0);
+		
+		--from EMRegister
+		PCaddress_exmem : in STD_LOGIC_VECTOR(15 downto 0);
+		data_exmem : in STD_LOGIC_VECTOR(15 downto 0);
+		MemWrite_exmem : in STD_LOGIC;
+		MemRead_exmem : in STD_LOGIC;
+		
+		datatoexmem : out STD_LOGIC_VECTOR(15 DOWNTO 0);
+		
 		ram2address : out STD_LOGIC_VECTOR(17 downto 0);
 		ram2data : inout STD_LOGIC_VECTOR(15 downto 0);
 		ram2_en : out std_logic;
 		ram2_oe	: out std_logic;
-		ram2_we	: out std_logic;
+		ram2_we	: out std_logic;			
 		PCout : out STD_LOGIC_VECTOR(15 downto 0);
 		bubble : in STD_LOGIC
 	);
@@ -219,11 +238,7 @@ port(
 		ram1_we			: out std_logic;
 		addressram1 : out STD_LOGIC_VECTOR(17 downto 0);
 		dataram1 : inout STD_LOGIC_VECTOR(15 downto 0);
-		ram2_en 		: out std_logic;
-		ram2_oe			: out std_logic;
-		ram2_we			: out std_logic;
-		addressram2 : out STD_LOGIC_VECTOR(17 downto 0);
-		dataram2 : inout STD_LOGIC_VECTOR(15 downto 0);
+		datafrompcmem : in STD_LOGIC_VECTOR(15 downto 0);
 		dataout : out STD_LOGIC_VECTOR(15 downto 0);
 		bubble : in STD_LOGIC
 	);
@@ -248,6 +263,8 @@ port(
     	rst 				: in STD_LOGIC;
 		CommandIn 		: in STD_LOGIC_VECTOR(15 downto 0);
 		PCin				: in STD_LOGIC_VECTOR(15 downto 0);
+		Regin_sidepath	: in STD_LOGIC_VECTOR(15 downto 0);--
+		Signal_sidepath: in STD_LOGIC_VECTOR(1 downto 0);--
 	 
 		Data1_out 		: out STD_LOGIC_VECTOR(15 downto 0);
 		Data2_out 		: out STD_LOGIC_VECTOR(15 downto 0);
@@ -257,7 +274,7 @@ port(
 		ALUSRC 			: out STD_LOGIC;
 		RegDst 			: out STD_LOGIC_VECTOR(3 downto 0);
 		immediate_out	: out STD_LOGIC_VECTOR(15 downto 0);
-		--immediate_in2	: out STD_LOGIC_VECTOR(10 downto 0); -- signal for debug
+		immediate_in2	: out STD_LOGIC_VECTOR(10 downto 0); -- signal for debug
 		MemRead			: out STD_LOGIC;
 		MemWrite		: out STD_LOGIC;
 		MemToReg		: out STD_LOGIC_VECTOR(1 downto 0);
@@ -270,7 +287,24 @@ port(
 	 
 		isBubble : in STD_LOGIC;
 	 
-		jmp	: out STD_LOGIC
+		jmp	: out STD_LOGIC;
+	 
+		isJRorder		: out STD_LOGIC;
+		isJmporder		: out STD_LOGIC_VECTOR(1 downto 0)
+	);
+end component;
+
+component datahazard is
+port(
+		IDEXMemRead : in STD_LOGIC;
+		IDEXRegDst : in STD_LOGIC_VECTOR(3 downto 0);
+		IFIDr1 : in  STD_LOGIC_VECTOR (3 downto 0);--FD.R1
+		IFIDr2 : in  STD_LOGIC_VECTOR (3 downto 0);--FD.R2
+		IsJROrderin : in STD_LOGIC;
+		IsJumpOrder : in STD_LOGIC_VECTOR(1 downto 0);
+		EXMEMMEMRead : in STD_LOGIC;
+		EXMEMRegDst : in STD_LOGIC_VECTOR(3 downto 0);
+		isBubble : out  STD_LOGIC
 	);
 end component;
 
@@ -279,6 +313,8 @@ signal pcin_fd : STD_LOGIC_VECTOR(15 downto 0);
 signal pcout_fd : STD_LOGIC_VECTOR(15 downto 0);
 signal commandout_fd : STD_LOGIC_VECTOR(15 downto 0);
 signal commandin_fd : STD_LOGIC_VECTOR(15 downto 0);
+signal IsJROrder_fd : STD_LOGIC;
+signal IsJumpOrder_fd : STD_LOGIC_VECTOR(1 downto 0);
 
 --IDEXReg
 signal idexwrite : STD_LOGIC := '1';
@@ -352,6 +388,7 @@ signal data2out_memwri : STD_LOGIC_VECTOR(15 downto 0);
 --Forward signal
 signal forwarda_forward : STD_LOGIC_VECTOR(1 downto 0);
 signal forwardb_forward : STD_LOGIC_VECTOR(1 downto 0);
+signal forwardc_forward : STD_LOGIC_VECTOR(1 downto 0);
 
 --PCChoose signal
 signal	pcsrc : STD_LOGIC := '0';
@@ -366,7 +403,7 @@ signal isbubble_pc_fd : STD_LOGIC := '0';
 signal isbubble_pcregister : STD_LOGIC := '0';
 
 --PCMem signal
---signal pcmemout : STD_LOGIC_VECTOR(15 downto 0);
+signal datafrompcmem_pcmem : STD_LOGIC_VECTOR(15 downto 0);
 
 --ForwardMUX1 signal
 signal aludata_forwardmux1 : STD_LOGIC_VECTOR(15 downto 0);
@@ -389,6 +426,14 @@ signal ifidwrite_id_topmodual : STD_LOGIC := '1';
 signal isbubble_pc_fd_de : STD_LOGIC := '0';
 
 begin
+
+Light1 <= result_toregmux(7 downto 0);
+Light2 <= regout_memwri;
+Light3 <= regwriteout_memwri;
+
+--Light1 <= "10101010";
+--Light2 <= "1111";
+
 isbubble_pcregister <= isbubble_pc_fd or isbubble_pc_fd_de;
 process
 begin
@@ -420,6 +465,15 @@ PCSim_comp:PCSim port map(
 		rst => rst,
 		clk => clk,
 		PCaddress => pcregisterout,
+		
+		--from EMRegister
+		PCaddress_exmem => ALUresultout_exmem,
+		data_exmem => data2out_exmem,
+		MemWrite_exmem => memwriteout_exmem,
+		MemRead_exmem => memreadout_exmem,
+		
+		datatoexmem => datafrompcmem_pcmem,
+		
 		ram2address => ram2addr,
 		ram2data => data2,
 		ram2_en => ram2EN,
@@ -453,9 +507,9 @@ DERegister_comp:DERegister port map(
 			clk => clk,
 			rst => rst,
 			Immin => immin_idex,
-           	Immout => immout_idex,
-           	R1in => r1in_idex,
-           	R2in => r2in_idex,
+         Immout => immout_idex,
+         R1in => r1in_idex,
+         R2in => r2in_idex,
 			RegDstin => regdstin_idex,
 			R1out => r1out_idex,
 			R2out => r2out_idex,
@@ -490,7 +544,7 @@ ForwardMUX_comp1:ForwardMUX port map(
 			ALUdata => aludata_forwardmux1
 	);
 
---ForwardMUX port map
+--ForwardMUX2 port map
 ForwardMUX_comp2:ForwardMUX port map(
 			data1 => data2out_idex,--Reg
            	data2 => ALUresultout_exmem,--EX.re_Alu
@@ -508,7 +562,11 @@ Forward_comp:Forward port map(
            	IDEXrx => r1out_idex,--DE.R1
            	IDEXry => r2out_idex,--DE.R2
            	ForwardA => forwarda_forward,
-           	ForwardB => forwardb_forward
+           	ForwardB => forwardb_forward,
+				ForwardC => forwardc_forward,
+				IsJROrder => IsJROrder_fd,
+				IsJumpOrder => IsJumpOrder_fd,
+				IFIDr1 => r1in_idex
 	);
 
 --ALUSrcMUX port map
@@ -563,11 +621,7 @@ IO_comp:IO port map(
 		ram1_en => ram1EN,
 		addressram1 => ram1addr,
 		dataram1 => data1,
-		ram2_oe => ram2OE,
-		ram2_we => ram2WE,
-		ram2_en => ram2EN,
-		addressram2 => ram2addr,
-		dataram2 => data2,
+		datafrompcmem => datafrompcmem_pcmem,
 		dataout => memin_memwri,
 		bubble => isbubble_pc_fd
 	);
@@ -629,7 +683,24 @@ ID_topmodual_comp:ID_topmodual port map(
     	reg_write_signal => regwriteout_memwri,
 	 
 		isBubble => isbubble_pc_fd_de,
+		
+		Regin_sidepath => ALUresultout_exmem,
+		Signal_sidepath => forwardc_forward,
+		isJRorder => IsJROrder_fd,
+		isJmporder => IsJumpOrder_fd,
 	 
 		jmp	=> pcsrc
 	);
+
+datahazard_comp:datahazard port map(
+		IDEXMemRead => memreadout_idex,
+        IDEXRegDst => regdstout_idex,
+        IFIDr1 => r1in_idex,
+        IFIDr2 => r2in_idex,
+        IsJROrderin => IsJROrder_fd,
+        IsJumpOrder => IsJumpOrder_fd,
+        EXMEMMEMRead => memreadout_exmem,
+        EXMEMRegDst => regout_exmem,
+        isBubble => isbubble_pc_fd_de
+	)
 end Behavioral;
