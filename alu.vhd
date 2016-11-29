@@ -14,7 +14,7 @@ end Alu;
 architecture Behavioral of Alu is
 	shared variable tem:std_logic_vector(15 downto 0):="0000000000000000";
 begin
-	process
+	process(op, A, B)
 	begin
 		case op is
 			when "0000" =>
@@ -22,7 +22,7 @@ begin
 			when "0001" =>
 				re<=A + B;
 			when "0010" =>
-				re<=A AND B
+				re<=A AND B;
 			when "0011" =>
 				re<=A - B;
 			when "0100" =>

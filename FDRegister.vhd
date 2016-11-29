@@ -13,33 +13,35 @@ entity FDRegister is
 end FDRegister;
 
 architecture Behavioral of FDRegister is
-Signal localPC:STD_LOGIC_VECTOR (15 downto 0);
-Signal localCommand:STD_LOGIC_VECTOR (15 downto 0);
-Signal state:STD_LOGIC_VECTOR(2 downto 0) := "00";
+	Signal localPC:STD_LOGIC_VECTOR (15 downto 0);
+	Signal localCommand:STD_LOGIC_VECTOR (15 downto 0);
+	Signal state:STD_LOGIC_VECTOR(1 downto 0) := "00";
 begin
 	Commandout<=localCommand;
 	PCout<=localPC;
 
-process(clk)
-begin
-	if(rst='0')then
-		localCommand<="0000000000000000";
-		localPC<="0000000000000000";
-		state<="00"
-	elsif(clk'event and clk='1') then
-		case (state) is
-			when "00"=>
-				if(IsBubble='0') then
-				localCommand<=Commandin;
-				localPC<=PCin;
-				end if;	
-				state<="01";
-			when "01"=>
-				state<="10";
-			when "10"=>
-				state<="00";
-		end case;
-	end if;
-end process;
+	process(clk,rst)
+	begin
+		if(rst='0')then
+			localCommand<="0000000000000000";
+			localPC<="0000000000000000";
+			state<="00";
+		elsif(clk'event and clk='1') then
+			case (state) is
+				when "00"=>
+					if(IsBubble='0') then
+					localCommand<=Commandin;
+					localPC<=PCin;
+					end if;	
+					state<="01";
+				when "01"=>
+					state<="10";
+				when "10"=>
+					state<="00";
+				when others =>
+					state <= "00";
+			end case;
+		end if;
+	end process;
 end Behavioral;
 

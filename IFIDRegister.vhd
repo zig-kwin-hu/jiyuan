@@ -106,8 +106,6 @@ begin
 					elsif((control_first5 = "00100") or 		--BEQZ
 							(control_first8 = "01100000")) then	--BTEQZ 
 						isJmporder 	<= "10";
-					elsif(control_first5 = "00101") then		--BNEZ
-						isJmporder	<= "01";
 					else
 						isJmporder	<= "00";
 					end if;
@@ -173,23 +171,6 @@ begin
 								RegWrite <= '0';
 								
 							when "00100" => --BEQZ
-								Reg1	(3)			<= '0';
-								Reg1  (2 downto 0)<= CommandIn(10 downto 8);
-								Reg2  (3 downto 0)<= "1111";
-								ALUOP (3 downto 0)<= "0000";
-								ALUSRC				<= '1';
-								RegDst(3 downto 0)<= "1111";
-								
-								immediate	(7 downto 0)<= CommandIn(7 downto 0);
-								immediate_n	(2 downto 0)<= "011";
-								immediate_arith			<= '1';
-								
-								MemRead	<= '0';
-								MemWrite	<= '0';
-								MemToReg	<= "10";
-								RegWrite <= '0';
-								
-							when "00101" => --BNEZ
 								Reg1	(3)			<= '0';
 								Reg1  (2 downto 0)<= CommandIn(10 downto 8);
 								Reg2  (3 downto 0)<= "1111";

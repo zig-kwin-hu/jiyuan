@@ -10,6 +10,7 @@ entity PCAdd1 is
 end PCAdd1;
 
 architecture Behavior of PCAdd1 is
-	begin
+
+begin
 	PCout <= PCin + "0000000000000001";
 end Behavior;

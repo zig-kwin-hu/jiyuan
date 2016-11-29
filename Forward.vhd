@@ -1,4 +1,4 @@
-library IEEE;
+ibrary IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
 entity Forward is
@@ -8,8 +8,16 @@ entity Forward is
            	MEMWBrd : in  STD_LOGIC_VECTOR (3 downto 0);--MW.RegDst
            	IDEXrx : in  STD_LOGIC_VECTOR (3 downto 0);--DE.R1
            	IDEXry : in  STD_LOGIC_VECTOR (3 downto 0);--DE.R2
-           	ForwardA : out  STD_LOGIC_VECTOR (1 downto 0);
-           	ForwardB : out  STD_LOGIC_VECTOR (1 downto 0));
+           	ForwardA : out STD_LOGIC_VECTOR(1 downto 0);
+           	ForwardB : out STD_LOGIC_VECTOR(1 downto 0);
+
+           	ForwardC : out STD_LOGIC_VECTOR(1 downto 0);--00-Reg,01-Mem.Re,10-WB.ToReg
+
+            IsJROrder : in STD_LOGIC;
+           	IsJumpOrder : in STD_LOGIC_VECTOR(1 downto);
+           	IFIDR1 : in STD_LOGIC_VECTOR(3 downto 0);
+            EXMEMMemRead : in STD_LOGIC
+           	);
 end Forward;
 
 architecture Behavioral of Forward is
@@ -33,7 +41,17 @@ begin
 	else
 		ForwardB<="00";
 	end if;
+
+  if (IsJROrder='1' or IsJumpOrder="01" or IsJumpOrder="10") then 
+    if (EXMEMRegWrite='1' and EXMEMMemRead='0' and EXMEMrd=IFIDR1)
+      ForwardC<="01"
+    else
+      ForwardC<="00"
+    end if;
+  else
+      ForwardC<="00";
+  end if;
+
 end process;
 
 end Behavioral;
-
