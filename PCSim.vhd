@@ -52,6 +52,8 @@ begin
 		elsif clk'event and clk = '1' then
 			case state is
 				when "00" =>
+					ram2_oe <= '1';
+					ram2_we <= '1';
 					state <= "01";
 				when "01" =>
 					if(bubble = '0') then
@@ -76,15 +78,16 @@ begin
 					state <= "10";
 				when "10" =>
 					if(bubble = '0') then
-						case PCaddress(1 downto 0) is
-							when "00" =>
-								ram2data <= "0110100000000001";
-							when "01" =>
-								ram2data <= "0110100100000010";
-							when "10" =>
-								ram2data <= "1110000000101001";
-							when others =>
-						end case;
+						ram2_oe <= '0';
+						--case PCaddress(1 downto 0) is
+						--	when "00" =>
+						--		ram2data <= "0110100000000001";
+						--	when "01" =>
+						--		ram2data <= "0110100100000010";
+						--	when "10" =>
+						--		ram2data <= "1110000000101001";
+						--	when others =>
+						--end case;
 					elsif(MemWrite_exmem = '1') then
 						ram2_we <= '0';
 					elsif(MemRead_exmem = '1') then

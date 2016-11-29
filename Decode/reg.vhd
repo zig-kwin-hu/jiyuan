@@ -39,9 +39,11 @@ entity reg is
            reg_write_signal : in  STD_LOGIC;
            reg_out1 : out  STD_LOGIC_VECTOR (15 downto 0);
            reg_out2 : out  STD_LOGIC_VECTOR (15 downto 0);
-			  PCRegister: in STD_LOGIC_VECTOR(15 downto 0);
+			  PCin: in STD_LOGIC_VECTOR(15 downto 0);
            rst : in  STD_LOGIC;
            clk : in  STD_LOGIC;
+			  RegIn_sidepath: in STD_LOGIC_VECTOR(15 downto 0);
+			  signal_sidepath : in STD_LOGIC_VECTOR(1 downto 0);
 			  
 			  reg1zero : out STD_LOGIC_VECTOR(1 downto 0)
 			 );
@@ -64,21 +66,35 @@ begin
 		elsif rising_edge (clk) then
 			case current_state is
 				when s0 =>
-					if (reg_write_signal = '1') then
-						reg_mem(conv_integer(reg_write_loc)) <= reg_write_data;
-					end if;
+					
 					current_state <= s1;
 				when s1 =>
 					if ( reg_in1 = "1001") then
-						reg1_out_temp <= PCRegister;
+						reg1_out_temp <= PCin;
+					elsif( reg_in1 = "1100" ) then
+						reg1_out_temp <= "0000000000000000";
 					else
-						reg1_out_temp <= reg_mem(conv_integer(reg_in1));
+						if (reg_write_signal = '1' and reg_write_loc = reg_in1) then
+							reg1_out_temp <= reg_write_data;
+						else
+							reg1_out_temp <= reg_mem(conv_integer(reg_in1));
+						end if;
 					end if;
 					
 					if ( reg_in2 = "1001") then
-						reg_out2 <= PCRegister;
+						reg_out2 <= PCin;
+					elsif( reg_in2 = "1100" ) then
+						reg_out2 <= "0000000000000000";
 					else
-						reg_out2 <= reg_mem(conv_integer(reg_in2));
+						if (reg_write_signal = '1' and reg_write_loc = reg_in2) then
+							reg_out2 <= reg_write_data;
+						else
+							reg_out2 <= reg_mem(conv_integer(reg_in2));
+						end if;
+					end if;
+					
+					if (reg_write_signal = '1') then
+						reg_mem(conv_integer(reg_write_loc)) <= reg_write_data;
 					end if;
 					current_state <= s2;
 				when s2 =>
@@ -87,12 +103,20 @@ begin
 		end if;
 	end process;
 	
-	reg1EqualToZero : process(reg1_out_temp)
+	reg1EqualToZero : process(reg1_out_temp, signal_sidepath, RegIn_sidepath)
 	begin
-		if ( reg1_out_temp = "0000000000000000" ) then
-			reg1zero <= "01";
+		if (signal_sidepath = "01") then
+			if ( RegIn_sidepath = "0000000000000000" ) then
+				reg1zero <= "01";
+			else
+				reg1zero <= "00";
+			end if;
 		else
-			reg1zero <= "00";
+			if ( reg1_out_temp = "0000000000000000" ) then
+				reg1zero <= "01";
+			else
+				reg1zero <= "00";
+			end if;
 		end if;
 	end process;
 

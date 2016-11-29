@@ -33,19 +33,30 @@ entity ID_PCselector is
     Port ( PC_calc_res : in  STD_LOGIC_VECTOR (15 downto 0);
            Register_in : in  STD_LOGIC_VECTOR (15 downto 0);
            PCout : out  STD_LOGIC_VECTOR (15 downto 0);
-			  isJRorder : in STD_LOGIC
+			  isJRorder : in STD_LOGIC;
+			  
+			  RegIn_sidepath: in STD_LOGIC_VECTOR(15 downto 0);
+			  signal_sidepath : in STD_LOGIC_VECTOR(1 downto 0)
 			  );
 end ID_PCselector;
 
 architecture Behavioral of ID_PCselector is
 
 begin
-	PCselector : process(isJRorder, Register_in, PC_calc_res)
+	PCselector : process(isJRorder, Register_in, PC_calc_res, signal_sidepath, RegIn_sidepath)
 	begin
-		if (isJRorder = '1') then
-			PCout <= Register_in;
+		if (signal_sidepath = "01") then
+			if (isJRorder = '1') then
+				PCout <= RegIn_sidepath;
+			else
+				PCout <= PC_calc_res;
+			end if;
 		else
-			PCout <= PC_calc_res;
+			if (isJRorder = '1') then
+				PCout <= Register_in;
+			else
+				PCout <= PC_calc_res;
+			end if;
 		end if;
 	end process PCselector;
 
