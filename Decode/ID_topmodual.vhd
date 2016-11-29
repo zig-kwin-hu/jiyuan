@@ -32,6 +32,8 @@ entity ID_topmodual is
     rst 				: in STD_LOGIC;
     CommandIn 		: in STD_LOGIC_VECTOR(15 downto 0);
 	 PCin				: in STD_LOGIC_VECTOR(15 downto 0);
+	 RegIn_sidepath: in STD_LOGIC_VECTOR(15 downto 0);
+	 signal_sidepath : in STD_LOGIC_VECTOR(1 downto 0);
 	 
 	 Data1_out 		: out STD_LOGIC_VECTOR(15 downto 0);
 	 Data2_out 		: out STD_LOGIC_VECTOR(15 downto 0);
@@ -54,7 +56,10 @@ entity ID_topmodual is
 	 
 	 isBubble : in STD_LOGIC;
 	 
-	 jmp	: out STD_LOGIC
+	 jmp	: out STD_LOGIC;
+	 
+	 isJRorder		: out STD_LOGIC;
+	 isJmporder		: out STD_LOGIC_VECTOR(1 downto 0)
 	 
 	 );
 end ID_topmodual;
@@ -133,6 +138,8 @@ component reg is
 			  PCin	: in STD_LOGIC_VECTOR(15 downto 0);
            rst : in  STD_LOGIC;
            clk : in  STD_LOGIC;
+			  RegIn_sidepath: in STD_LOGIC_VECTOR(15 downto 0);
+			  signal_sidepath : in STD_LOGIC_VECTOR(1 downto 0);
 			  
 			  reg1zero : out STD_LOGIC_VECTOR(1 downto 0)
 			 );
@@ -152,7 +159,10 @@ component ID_PCselector is
     Port ( PC_calc_res : in  STD_LOGIC_VECTOR (15 downto 0);
            Register_in : in  STD_LOGIC_VECTOR (15 downto 0);
            PCout : out  STD_LOGIC_VECTOR (15 downto 0);
-			  isJRorder : in STD_LOGIC
+			  isJRorder : in STD_LOGIC;
+			  
+			  RegIn_sidepath: in STD_LOGIC_VECTOR(15 downto 0);
+			  signal_sidepath : in STD_LOGIC_VECTOR(1 downto 0)
 			  );
 end component ID_PCselector;
 
@@ -162,12 +172,22 @@ component ID_JMPControl is
            jmp 				: out  STD_LOGIC);
 end component ID_JMPControl;
 
+--ID to out
+signal RegIn_sidepath_temp : STD_LOGIC_VECTOR(15 downto 0);
+signal signal_sidepath_temp : STD_LOGIC_VECTOR(1 downto 0);
+
 begin
 	immediate_in2 <= immediate_in; -- for debug
 	Data1_out <= Data1out_temp;
 	
 	Reg1_out <= Reg1;
 	Reg2_out <= Reg2;
+	
+	isJRorder <= isJRorder_temp;
+	isJmporder <= isJmporder_temp;
+	
+	RegIn_sidepath_temp <= RegIn_sidepath;
+	signal_sidepath_temp <= signal_sidepath;
 
 	IFIDRegister_comp: IFIDRegister port map(
 		IFIDWrite => IFIDWrite,
@@ -216,6 +236,8 @@ begin
 		
 		clk => clk,
 		rst => rst,
+	   RegIn_sidepath => RegIn_sidepath_temp,
+	   signal_sidepath => signal_sidepath_temp,
 		reg1zero => reg1zero_temp
 	);
 	
@@ -229,7 +251,9 @@ begin
 		PC_calc_res => PC_calc_res,
       Register_in => Data1out_temp,
       PCout => PCout,
-		isJRorder => isJRorder_temp
+		isJRorder => isJRorder_temp,
+	   RegIn_sidepath => RegIn_sidepath_temp,
+	   signal_sidepath => signal_sidepath_temp
 	);
 	
 	ID_JMPControl_comp : ID_JMPControl port map( 

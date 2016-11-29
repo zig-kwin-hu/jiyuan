@@ -36,12 +36,15 @@ entity ID_JMPControl is
 end ID_JMPControl;
 
 architecture Behavioral of ID_JMPControl is
-signal result : STD_LOGIC_VECTOR(1 downto 0);
+	signal result : STD_LOGIC_VECTOR(1 downto 0);
 begin
-	result <= isJmporder or regEqualToZero;
-	jmpprocess : process(result)
+	jmpprocess : process(isJmporder, regEqualToZero)
 	begin
-		if (result = "11") then
+		if (isJmporder = "11") then
+			jmp <= '1';
+		elsif(isJmporder = "10" and regEqualToZero = "11") then
+			jmp <= '1';
+		elsif(isJmporder = "01" and regEqualToZero = "00") then
 			jmp <= '1';
 		else
 			jmp <= '0';
